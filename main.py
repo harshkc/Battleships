@@ -3,6 +3,9 @@ import pygame
 
 pygame.font.init()
 
+# for playing sounds
+pygame.mixer.init()
+
 # creates a window with defined width & height
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -18,6 +21,12 @@ YELLOW = (255, 255, 0)
 # fonts
 HEALTH_FONT = pygame.font.SysFont("comicsans", 40)
 WINNER_FONT = pygame.font.SysFont("comicsans", 80)
+
+# game sounds
+SOUND_BULLET_HIT = pygame.mixer.Sound(os.path.join("Assets", "Grenade+1.wav"))
+SOUND_BULLET_FIRE = pygame.mixer.Sound(
+    os.path.join("Assets", "Gun+Silencer.wav"))
+SOUND_WINNER = pygame.mixer.Sound(os.path.join("Assets", "winner.wav"))
 
 # game elements constant
 FPS = 60
@@ -95,6 +104,7 @@ def draw_winner(winner_text):
     WIN.blit(winner_text_style, (WIDTH//2-winner_text_style.get_width()//2,
              HEIGHT//2-winner_text_style.get_height()))
     pygame.display.update()
+    SOUND_WINNER.play()
     pygame.time.delay(5000)
 
 
@@ -147,18 +157,22 @@ def main():
                     bullet = pygame.Rect(yellow_rect.x + SPACESHIP_HEIGHT,
                                          yellow_rect.y + SPACESHIP_WIDTH//2 - 2, BULLET_WIDTH, BULLET_HEIGHT)
                     bullets_yellow.append(bullet)
+                    SOUND_BULLET_FIRE.play()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RCTRL and len(bullets_red) < MAX_BULLETS:
                     bullet = pygame.Rect(red_rect.x,
                                          red_rect.y + SPACESHIP_WIDTH//2 - 2, BULLET_WIDTH, BULLET_HEIGHT)
                     bullets_red.append(bullet)
+                    SOUND_BULLET_FIRE.play()
 
             if event.type == RED_HITS:
                 health_yellow -= 1
+                SOUND_BULLET_HIT.play()
 
             if event.type == YELLOW_HITS:
                 health_red -= 1
+                SOUND_BULLET_HIT.play()
 
         winner_text = ""
         if health_yellow <= 0:

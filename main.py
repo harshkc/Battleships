@@ -18,6 +18,8 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 
+# TODO:diff winner sound, best of three rounds and timer
+
 # fonts
 HEALTH_FONT = pygame.font.SysFont("comicsans", 40)
 WINNER_FONT = pygame.font.SysFont("comicsans", 80)
@@ -27,6 +29,7 @@ SOUND_BULLET_HIT = pygame.mixer.Sound(os.path.join("Assets", "Grenade+1.wav"))
 SOUND_BULLET_FIRE = pygame.mixer.Sound(
     os.path.join("Assets", "Gun+Silencer.wav"))
 SOUND_WINNER = pygame.mixer.Sound(os.path.join("Assets", "winner.wav"))
+SOUND_LOSER = pygame.mixer.Sound(os.path.join("Assets", "loser.wav"))
 
 # game elements constant
 FPS = 60
@@ -35,6 +38,8 @@ VEL_SPACESHIP = 5
 BULLET_WIDTH, BULLET_HEIGHT = 10, 5
 VEL_BULLET = 12
 MAX_BULLETS = 3
+WINNER_YELLOW_TEXT = "Team Galactic Won!!!"
+WINNER_RED_TEXT = "Team Defender Won!!!"
 
 # user defined events
 YELLOW_HITS = pygame.USEREVENT + 1
@@ -104,7 +109,12 @@ def draw_winner(winner_text):
     WIN.blit(winner_text_style, (WIDTH//2-winner_text_style.get_width()//2,
              HEIGHT//2-winner_text_style.get_height()))
     pygame.display.update()
-    SOUND_WINNER.play()
+
+    if winner_text == WINNER_RED_TEXT:
+        SOUND_WINNER.play()
+    else:
+        SOUND_LOSER.play()
+
     pygame.time.delay(5000)
 
 
@@ -176,9 +186,9 @@ def main():
 
         winner_text = ""
         if health_yellow <= 0:
-            winner_text += "Team Defender Won!!!"
+            winner_text = WINNER_RED_TEXT
         if health_red <= 0:
-            winner_text += "Team Galatic Won!!!"
+            winner_text = WINNER_YELLOW_TEXT
 
         if winner_text != "":
             draw_winner(winner_text)
